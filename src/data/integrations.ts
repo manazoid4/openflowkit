@@ -1,0 +1,68 @@
+import type { Integration } from "../core/types";
+
+export const integrations: Integration[] = [
+  {
+    id: "openai-compatible",
+    name: "OpenAI-compatible LLMs",
+    category: "llm",
+    status: "ready",
+    plan: "free",
+    summary: "Route refinement through Ollama, LM Studio, vLLM, LiteLLM, OpenRouter, or hosted APIs.",
+  },
+  {
+    id: "local-whisper",
+    name: "Local Whisper",
+    category: "stt",
+    status: "planned",
+    plan: "free",
+    summary: "Run private transcription locally through whisper.cpp or compatible engines.",
+  },
+  {
+    id: "deepgram",
+    name: "Deepgram",
+    category: "stt",
+    status: "planned",
+    plan: "pro",
+    summary: "Low-latency managed transcription for users who prefer speed over fully local processing.",
+  },
+  {
+    id: "ollama",
+    name: "Ollama",
+    category: "llm",
+    status: "ready",
+    plan: "free",
+    summary: "Use local models for cleanup and command mode through an OpenAI-compatible endpoint.",
+  },
+  {
+    id: "cursor",
+    name: "Cursor and Windsurf",
+    category: "ide",
+    status: "planned",
+    plan: "pro",
+    summary: "Detect file mentions, preserve code syntax, and pass scoped workspace context to LLM prompts.",
+  },
+  {
+    id: "browser-extension",
+    name: "Browser extension",
+    category: "browser",
+    status: "planned",
+    plan: "pro",
+    summary: "Inject refined voice text into browser text fields and support command-mode transformations.",
+  },
+  {
+    id: "slack",
+    name: "Slack and Discord",
+    category: "work",
+    status: "community",
+    plan: "free",
+    summary: "Use app-specific style rules for concise messages and snippet expansion.",
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    category: "work",
+    status: "community",
+    plan: "free",
+    summary: "Dictate issues, PR comments, and code-review notes with developer-aware formatting.",
+  },
+];

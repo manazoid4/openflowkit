@@ -1,0 +1,35 @@
+{
+  "name": "openflowkit",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Open-source, LLM-agnostic voice dictation and AI text refinement kit inspired by Wispr Flow.",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "dictation",
+    "speech-to-text",
+    "whisper",
+    "llm",
+    "voice",
+    "tauri",
+    "open-source"
+  ],
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "vitest": "^4.0.16"
+  }
+}
