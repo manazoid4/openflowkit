@@ -1,6 +1,15 @@
 export type Plan = "free" | "pro" | "teams" | "enterprise";
 
-export type DictationMode = "dictate" | "command" | "code" | "message" | "document";
+export type DictationMode =
+  | "dictate"
+  | "command"
+  | "code"
+  | "message"
+  | "document"
+  | "email"
+  | "slack"
+  | "formal"
+  | "casual";
 
 export interface DictationContext {
   activeApp?: string;
@@ -32,6 +41,21 @@ export interface RefinementResult {
   provider: string;
   text: string;
   actions: string[];
+}
+
+export interface DictationRecord {
+  id: string;
+  rawTranscript: string;
+  refinedText: string;
+  language: string;
+  mode: DictationMode;
+  providerRoute: string;
+  latencyMs: number;
+  confidence: number;
+  privacyMode: boolean;
+  appContext: string | null;
+  status: "complete" | "partial" | "error";
+  createdAt: number;
 }
 
 export interface SpeechToTextProvider {
