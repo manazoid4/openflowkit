@@ -1,6 +1,15 @@
 export type Plan = "free" | "pro" | "teams" | "enterprise";
 
-export type DictationMode = "dictate" | "command" | "code" | "message" | "document";
+export type DictationMode =
+  | "dictate"
+  | "command"
+  | "code"
+  | "message"
+  | "document"
+  | "email"
+  | "slack"
+  | "formal"
+  | "casual";
 
 export type DictationStatus =
   | "idle"
@@ -58,6 +67,8 @@ export interface DictationResult {
   actions: string[];
   createdAt: string;
 }
+
+export type DictationRecord = DictationResult;
 
 export interface SpeechToTextProvider {
   id: string;

@@ -6,6 +6,29 @@ const selfCorrectionPattern = /\b(.{0,60}?)\s+(?:no\s+(wait|sorry|actually)|scra
 
 const repeatedWordPattern = /\b(\w+)\s+\1\b/gi;
 
+const CONTRACTIONS: Record<string, string> = {
+  "won't": "will not", "can't": "cannot", "don't": "do not",
+  "doesn't": "does not", "didn't": "did not", "isn't": "is not",
+  "aren't": "are not", "wasn't": "was not", "weren't": "were not",
+  "haven't": "have not", "hasn't": "has not", "hadn't": "had not",
+  "wouldn't": "would not", "shouldn't": "should not", "couldn't": "could not",
+  "I'm": "I am", "I've": "I have", "I'll": "I will", "I'd": "I would",
+  "we're": "we are", "they're": "they are", "it's": "it is",
+  "that's": "that is", "there's": "there is",
+};
+
+function capitalizeFirst(text: string): string {
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+}
+
+function expandContractions(text: string): string {
+  let result = text;
+  for (const [form, expansion] of Object.entries(CONTRACTIONS)) {
+    result = result.replace(new RegExp(`\\b${escapeRegExp(form)}\\b`, "gi"), expansion);
+  }
+  return result;
+}
+
 export function deterministicRefine(
   transcript: TranscriptionResult,
   context: DictationContext,
@@ -35,7 +58,7 @@ export function deterministicRefine(
   }
 
   // Step 4: Mode-specific formatting
-  if (context.mode === "code") {
+  if (context.mode === "code" || context.mode === "command") {
     text = text
       .replace(/\bsnake case\b/gi, "snake_case")
       .replace(/\bcamel case\b/gi, "camelCase")
@@ -63,6 +86,26 @@ export function deterministicRefine(
       .replace(/\bbullet point\b/gi, "\n- ")
       .replace(/\bnumbered list\b/gi, "\n1. ");
     actions.push("applied document formatting");
+  }
+
+  if (context.mode === "formal") {
+    const expanded = expandContractions(text);
+    if (expanded !== text) {
+      text = expanded;
+      actions.push("expanded contractions");
+    }
+    text = capitalizeFirst(text);
+    actions.push("formal tone applied");
+  }
+
+  if (context.mode === "email") {
+    text = capitalizeFirst(text);
+    actions.push("email formatting applied");
+  }
+
+  if (context.mode === "slack" || context.mode === "casual") {
+    text = capitalizeFirst(text);
+    actions.push("chat tone applied");
   }
 
   // Step 5: Snippet expansion

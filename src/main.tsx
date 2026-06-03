@@ -1,220 +1,96 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { deterministicRefine } from "./core/refine";
-import type { DictationContext, DictationResult, TranscriptionResult } from "./core/types";
-import { integrations } from "./data/integrations";
-import { planCapabilities } from "./core/plans";
-import { VoiceCapture } from "./components/VoiceCapture";
-import { TerminalBridge } from "./components/TerminalBridge";
+import { Landing } from "./components/Landing";
+import { DictationLab } from "./components/DictationLab";
 import "./styles/main.css";
 
-const demoTranscript: TranscriptionResult = {
-  provider: "demo",
-  rawText:
-    "um write a pull request comment saying the auth middleware is failing actually the session refresh path is failing and we should add a regression test",
-  segments: [],
-  latencyMs: 122,
-};
+type View = "landing" | "lab" | "share";
 
-const demoContext: DictationContext = {
-  mode: "code",
-  privacyMode: true,
-  activeApp: "Cursor",
-  style: "developer",
-  snippets: {
-    "book a call": "https://cal.com/openflowkit/demo",
-  },
-};
+function decodeShareText(): string | null {
+  const hash = window.location.hash;
+  const match = hash.match(/[?&]t=([^&]+)/);
+  if (!match) return null;
+  try {
+    return decodeURIComponent(atob(match[1]));
+  } catch {
+    return null;
+  }
+}
 
-const refined = deterministicRefine(demoTranscript, demoContext);
-const integrationCounts = integrations.reduce<Record<string, number>>((counts, integration) => {
-  counts[integration.status] = (counts[integration.status] ?? 0) + 1;
-  return counts;
-}, {});
+function getInitialView(): View {
+  const hash = window.location.hash;
+  if (hash.startsWith("#share")) return "share";
+  if (hash === "#lab") return "lab";
+  return "landing";
+}
 
-const planLabels: Record<string, string> = {
-  free: "Free core",
-  pro: "Pro speed",
-  teams: "Team control",
-  enterprise: "Enterprise trust",
-};
+function SharedSnippet({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
 
-function App() {
-  const [lastResult, setLastResult] = useState<DictationResult | null>(null);
-
-  const captureContext: DictationContext = {
-    mode: "dictate",
-    privacyMode: true,
-    language: "en-US",
-    snippets: {
-      "ship note": "Build passes before deployment.",
-      "book a call": "https://cal.com/openflowkit/demo",
-    },
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <main>
-      <nav className="nav" aria-label="Primary">
-        <a className="brand" href="#top">OpenFlowKit</a>
-        <div>
-          <a href="#capture">Capture</a>
-          <a href="#integrations">Integrations</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#architecture">Architecture</a>
-          <a className="button ghost" href="https://github.com/manazoid4/openflowkit">GitHub</a>
+    <main className="shareView">
+      <div className="shareCard">
+        <p className="eyebrow">Shared snippet</p>
+        <h1 className="shareHeadline">Open Flow</h1>
+        <div className="shareText">{text}</div>
+        <div className="shareActions">
+          <button className="button" onClick={handleCopy}>
+            {copied ? "Copied!" : "Copy text"}
+          </button>
+          <a className="button secondary" href="/">Open in my lab →</a>
         </div>
-      </nav>
-
-      <section id="top" className="hero">
-        <div className="heroCopy">
-          <p className="eyebrow">Open-source AI dictation layer</p>
-          <h1>Speak anywhere. Route through any model. Keep control.</h1>
-          <p>
-            A free core for local-first voice input, AI cleanup, developer-aware formatting,
-            snippets, dictionaries, and paid team controls.
-          </p>
-          <div className="actions">
-            <a className="button" href="#capture">Try it now</a>
-            <a className="button secondary" href="#pricing">See paid model</a>
-          </div>
-        </div>
-        <div className="demoPanel" aria-label="Refinement demo">
-          <div className="panelHeader">
-            <span>Privacy Mode On</span>
-            <span>{demoTranscript.latencyMs}ms</span>
-          </div>
-          <label>Raw speech</label>
-          <p className="raw">{demoTranscript.rawText}</p>
-          <label>Refined output</label>
-          <p className="refined">{refined.text}</p>
-          <div className="chips">
-            {refined.actions.map((action) => <span key={action}>{action}</span>)}
-          </div>
-        </div>
-      </section>
-
-      <section id="capture" className="section alt">
-        <div className="sectionIntro">
-          <div>
-            <h2>Browser MVP</h2>
-            <p className="sectionLead">
-              Push-to-talk voice capture, real-time refinement, and terminal bridge.
-              Zero-install demo. Desktop injection coming next.
-            </p>
-          </div>
-        </div>
-        <div className="captureGrid">
-          <VoiceCapture
-            context={captureContext}
-            onResult={(result) => setLastResult(result)}
-          />
-          <TerminalBridge
-            onDictation={(text) => {
-              // In a real setup, this would inject into the active field
-              console.log("Terminal received:", text);
-            }}
-          />
-        </div>
-        {lastResult && (
-          <div className="lastResultPanel">
-            <h4>Last dictation</h4>
-            <p className="refined">{lastResult.refinedText}</p>
-            <p className="meta">
-              {lastResult.latencyMs}ms · {Math.round(lastResult.confidence * 100)}% confidence ·{" "}
-              {lastResult.providerRoute}
-            </p>
-          </div>
-        )}
-      </section>
-
-      <section className="section">
-        <h2>Built around the actual moat</h2>
-        <div className="grid four">
-          {[
-            ["Universal input", "Native capture and paste injection for any text field."],
-            ["LLM agnostic", "OpenAI-compatible routing for Ollama, OpenRouter, vLLM, and cloud models."],
-            ["Developer aware", "Syntax, casing, file mentions, and terminal command formatting."],
-            ["Paid-ready", "Cloud sync, teams, analytics, policies, and enterprise deployment hooks."],
-          ].map(([title, body]) => (
-            <article className="card" key={title}>
-              <h3>{title}</h3>
-              <p>{body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="integrations" className="section alt">
-        <div className="sectionIntro">
-          <div>
-            <h2>Integrations that keep routing open</h2>
-            <p className="sectionLead">
-              Bring local, cloud, or managed providers without locking dictation into one model stack.
-            </p>
-          </div>
-          <div className="statusSummary" aria-label="Integration status summary">
-            {Object.entries(integrationCounts).map(([status, count]) => (
-              <span key={status}>
-                <strong>{count}</strong> {status}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="integrationGrid">
-          {integrations.map((integration) => (
-            <article className="integration" key={integration.id}>
-              <div className="integrationMeta">
-                <span className={`status ${integration.status}`}>{integration.status}</span>
-                <span className="plan">{integration.plan}</span>
-              </div>
-              <span className="category">{integration.category}</span>
-              <h3>{integration.name}</h3>
-              <p>{integration.summary}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="pricing" className="section">
-        <div className="sectionIntro">
-          <div>
-            <h2>Paid model</h2>
-            <p className="sectionLead">
-              Free stays useful for local workflows. Paid tiers unlock managed speed, shared context,
-              governance, and deployment control.
-            </p>
-          </div>
-          <p className="paidPrinciple">
-            Monetise convenience and control, not basic access.
-          </p>
-        </div>
-        <div className="grid pricing">
-          {(Object.keys(planCapabilities) as Array<keyof typeof planCapabilities>).map((plan) => (
-            <article className="priceCard" key={plan}>
-              <span className="planLabel">{planLabels[plan]}</span>
-              <h3>{plan}</h3>
-              <ul>
-                {planCapabilities[plan].map((capability) => <li key={capability}>{capability}</li>)}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="architecture" className="section architecture">
-        <h2>Architecture</h2>
-        <div className="pipeline">
-          {["Capture", "Transcribe", "Refine", "Personalize", "Inject", "Sync"].map((step) => (
-            <span key={step}>{step}</span>
-          ))}
-        </div>
-        <p>
-          Desktop clients should own capture and injection. The shared core owns provider contracts,
-          privacy policy, refinement, snippets, dictionaries, plan gating, and model routing.
+        <p className="shareNoticeSmall">
+          Shared via Open Flow. No account or install needed.
         </p>
-      </section>
+      </div>
     </main>
   );
+}
+
+function App() {
+  const [view, setView] = useState<View>(getInitialView);
+  const sharedText = view === "share" ? decodeShareText() : null;
+
+  useEffect(() => {
+    const handler = () => setView(getInitialView());
+    window.addEventListener("hashchange", handler);
+    return () => window.removeEventListener("hashchange", handler);
+  }, []);
+
+  const goToLab = () => {
+    window.location.hash = "#lab";
+    setView("lab");
+  };
+
+  const goToLanding = () => {
+    window.location.hash = "";
+    setView("landing");
+  };
+
+  if (view === "share") {
+    return sharedText ? (
+      <SharedSnippet text={sharedText} />
+    ) : (
+      <main className="shareView">
+        <div className="shareCard">
+          <p>Invalid or expired share link.</p>
+          <a className="button" href="/">Go home</a>
+        </div>
+      </main>
+    );
+  }
+
+  if (view === "lab") {
+    return <DictationLab onBack={goToLanding} />;
+  }
+
+  return <Landing onOpenLab={goToLab} />;
 }
 
 createRoot(document.getElementById("root")!).render(<App />);
