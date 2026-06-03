@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { deterministicRefine } from "./core/refine";
-import type { DictationContext, TranscriptionResult } from "./core/types";
+import type { DictationContext, DictationResult, TranscriptionResult } from "./core/types";
 import { integrations } from "./data/integrations";
 import { planCapabilities } from "./core/plans";
+import { VoiceCapture } from "./components/VoiceCapture";
+import { TerminalBridge } from "./components/TerminalBridge";
 import "./styles/main.css";
 
 const demoTranscript: TranscriptionResult = {
@@ -38,11 +40,24 @@ const planLabels: Record<string, string> = {
 };
 
 function App() {
+  const [lastResult, setLastResult] = useState<DictationResult | null>(null);
+
+  const captureContext: DictationContext = {
+    mode: "dictate",
+    privacyMode: true,
+    language: "en-US",
+    snippets: {
+      "ship note": "Build passes before deployment.",
+      "book a call": "https://cal.com/openflowkit/demo",
+    },
+  };
+
   return (
     <main>
       <nav className="nav" aria-label="Primary">
         <a className="brand" href="#top">OpenFlowKit</a>
         <div>
+          <a href="#capture">Capture</a>
           <a href="#integrations">Integrations</a>
           <a href="#pricing">Pricing</a>
           <a href="#architecture">Architecture</a>
@@ -59,7 +74,7 @@ function App() {
             snippets, dictionaries, and paid team controls.
           </p>
           <div className="actions">
-            <a className="button" href="#integrations">View integrations</a>
+            <a className="button" href="#capture">Try it now</a>
             <a className="button secondary" href="#pricing">See paid model</a>
           </div>
         </div>
@@ -76,6 +91,40 @@ function App() {
             {refined.actions.map((action) => <span key={action}>{action}</span>)}
           </div>
         </div>
+      </section>
+
+      <section id="capture" className="section alt">
+        <div className="sectionIntro">
+          <div>
+            <h2>Browser MVP</h2>
+            <p className="sectionLead">
+              Push-to-talk voice capture, real-time refinement, and terminal bridge.
+              Zero-install demo. Desktop injection coming next.
+            </p>
+          </div>
+        </div>
+        <div className="captureGrid">
+          <VoiceCapture
+            context={captureContext}
+            onResult={(result) => setLastResult(result)}
+          />
+          <TerminalBridge
+            onDictation={(text) => {
+              // In a real setup, this would inject into the active field
+              console.log("Terminal received:", text);
+            }}
+          />
+        </div>
+        {lastResult && (
+          <div className="lastResultPanel">
+            <h4>Last dictation</h4>
+            <p className="refined">{lastResult.refinedText}</p>
+            <p className="meta">
+              {lastResult.latencyMs}ms · {Math.round(lastResult.confidence * 100)}% confidence ·{" "}
+              {lastResult.providerRoute}
+            </p>
+          </div>
+        )}
       </section>
 
       <section className="section">

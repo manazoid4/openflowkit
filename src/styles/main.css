@@ -314,6 +314,309 @@ label {
   max-width: 260px;
 }
 
+/* Voice Capture */
+.captureGrid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 28px;
+}
+
+.voiceCapture {
+  background: #fff;
+  border: 1px solid #dedbd1;
+  border-radius: 8px;
+  padding: 22px;
+}
+
+.captureControls {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.recordButton {
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  border-radius: 7px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 800;
+  min-height: 42px;
+  padding: 10px 16px;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.recordButton:hover {
+  transform: translateY(-1px);
+}
+
+.recordButton.recording {
+  background: #111;
+  border-color: #111;
+}
+
+.statusBar {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.statusDot {
+  border-radius: 50%;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+}
+
+.statusDot.idle {
+  background: #a1a1aa;
+}
+
+.statusDot.capturing {
+  animation: pulse 1.2s infinite;
+  background: #dc2626;
+}
+
+.statusDot.transcribing,
+.statusDot.refining {
+  background: #f59e0b;
+}
+
+.statusDot.completed {
+  background: #16a34a;
+}
+
+.statusDot.error {
+  background: #dc2626;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.statusLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.latencyHint {
+  color: #71717a;
+  font-size: 0.78rem;
+  margin-left: auto;
+}
+
+.captureError {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #991b1b;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+}
+
+.transcriptDisplay {
+  background: #f8f7f3;
+  border: 1px solid #e7e3d7;
+  border-radius: 6px;
+  min-height: 80px;
+  padding: 12px;
+}
+
+.transcriptDisplay .interim {
+  color: #a1a1aa;
+}
+
+.transcriptDisplay .final {
+  color: #151719;
+}
+
+.transcriptDisplay .placeholder {
+  color: #a1a1aa;
+  font-size: 0.9rem;
+}
+
+.historyPanel {
+  margin-top: 16px;
+}
+
+.historyPanel h4 {
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.historyPanel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.historyPanel li {
+  border-bottom: 1px solid #f1f0ea;
+  padding: 10px 0;
+}
+
+.historyPanel li:last-child {
+  border-bottom: none;
+}
+
+.historyPanel .refined {
+  font-size: 0.95rem;
+  margin: 0 0 4px;
+}
+
+.historyPanel .meta {
+  color: #71717a;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+/* Terminal Bridge */
+.terminalBridge {
+  background: #fff;
+  border: 1px solid #dedbd1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+}
+
+.bridgeHeader {
+  align-items: center;
+  border-bottom: 1px solid #e7e3d7;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+}
+
+.connectionDot {
+  border-radius: 50%;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+}
+
+.connectionDot.online {
+  background: #16a34a;
+}
+
+.connectionDot.offline {
+  background: #dc2626;
+}
+
+.connectionLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-right: auto;
+}
+
+.bridgeBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 12px;
+}
+
+.logPanel {
+  background: #0f0f10;
+  border-radius: 6px;
+  color: #e4e4e7;
+  flex: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  max-height: 260px;
+  min-height: 160px;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.logLine {
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+
+.logPanel .placeholder {
+  color: #71717a;
+}
+
+.commandBar {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.commandInput {
+  display: flex;
+  gap: 8px;
+}
+
+.commandInput input {
+  border: 1px solid #d4d1c7;
+  border-radius: 6px;
+  flex: 1;
+  font-size: 0.9rem;
+  min-height: 36px;
+  padding: 8px 12px;
+}
+
+.button.small {
+  font-size: 0.78rem;
+  min-height: 32px;
+  padding: 6px 10px;
+}
+
+.button.small.active {
+  background: #111;
+  color: #fff;
+}
+
+.lastResultPanel {
+  background: #fff;
+  border: 1px solid #dedbd1;
+  border-radius: 8px;
+  margin-top: 18px;
+  padding: 18px;
+}
+
+.lastResultPanel h4 {
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.lastResultPanel .refined {
+  background: #e6f5f2;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin: 0 0 8px;
+  padding: 12px;
+}
+
+.lastResultPanel .meta {
+  color: #71717a;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+@media (max-width: 980px) {
+  .captureGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .priceCard h3 {
   text-transform: capitalize;
 }
