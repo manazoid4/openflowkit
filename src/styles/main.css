@@ -194,6 +194,9 @@ h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
 .chips span { background: var(--text); border-radius: 999px; color: #fff; font-size: 0.72rem; font-weight: 700; padding: 3px 9px; }
 
 .labActions { display: flex; gap: 10px; margin: 0 auto; max-width: 1200px; padding: 0 24px 40px; width: 100%; }
+.bridgeStatus { background: #f3f4f6; border: 1.5px solid var(--border); border-radius: 6px; color: var(--text-muted); font-size: 0.72rem; font-weight: 700; padding: 4px 8px; text-transform: uppercase; }
+.bridgeStatus.on { background: var(--accent-light); border-color: #a7d7d3; color: var(--accent); }
+.bridgeError { background: #fef2f2; border: 1.5px solid #fecaca; border-radius: var(--radius-sm); color: var(--red); font-size: 0.84rem; font-weight: 600; margin: 0 auto 24px; max-width: 1200px; padding: 10px 20px; width: calc(100% - 48px); }
 .shareNotice { background: var(--accent-light); border: 1px solid #a7d7d3; border-radius: var(--radius-sm); color: var(--accent); font-size: 0.84rem; font-weight: 600; margin: 0 auto 24px; max-width: 1200px; padding: 10px 20px; width: calc(100% - 48px); }
 
 .unsupportedMsg { background: #fef2f2; border: 1.5px solid #fecaca; border-radius: var(--radius); max-width: 400px; padding: 24px 28px; text-align: center; }

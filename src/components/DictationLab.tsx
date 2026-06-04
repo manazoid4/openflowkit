@@ -4,6 +4,7 @@ import { WRITING_MODES, writingModeLabels, writingModeToContext } from "../core/
 import type { WritingMode } from "../core/writingModes";
 import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
 import { useHistory } from "../hooks/useHistory";
+import { useTerminalBridge } from "../hooks/useTerminalBridge";
 import type { DictationRecord } from "../core/types";
 
 const LANGUAGES = [
@@ -41,6 +42,7 @@ export function DictationLab({ onBack }: Props) {
   const { state, interimTranscript, finalTranscript, error, start, stop, reset } =
     useSpeechRecognition(language);
   const { history, addRecord, clearHistory, deleteRecord } = useHistory();
+  const { connected: bridgeConnected, injecting: bridgeInjecting, lastError: bridgeError, send: sendToBridge } = useTerminalBridge();
   const startTimeRef = useRef(0);
   const prevFinalRef = useRef("");
 
@@ -106,6 +108,12 @@ export function DictationLab({ onBack }: Props) {
     setSharedLink(url);
   }, [refinedText, finalTranscript]);
 
+  const handleSendToTerminal = useCallback(async () => {
+    const text = refinedText || finalTranscript;
+    if (!text) return;
+    await sendToBridge(text, "clipboard");
+  }, [refinedText, finalTranscript, sendToBridge]);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.code === "Space" && e.target === document.body) {
@@ -166,6 +174,12 @@ export function DictationLab({ onBack }: Props) {
           >
             History{history.length > 0 ? ` (${history.length})` : ""}
           </button>
+          <span
+            className={`bridgeStatus${bridgeConnected ? " on" : ""}`}
+            title={bridgeConnected ? "Terminal bridge connected" : "Terminal bridge offline — run node bridge/server.ts"}
+          >
+            {bridgeConnected ? "Bridge" : "No bridge"}
+          </span>
         </div>
       </header>
 
@@ -286,6 +300,21 @@ export function DictationLab({ onBack }: Props) {
               {sharedLink ? "Link copied!" : "Share link"}
             </button>
           )}
+          {refinedText && (
+            <button
+              className="button secondary"
+              onClick={handleSendToTerminal}
+              disabled={bridgeInjecting}
+            >
+              {bridgeInjecting ? "Sending…" : bridgeConnected ? "Send to terminal" : "Bridge offline"}
+            </button>
+          )}
+        </div>
+      )}
+
+      {bridgeError && (
+        <div className="bridgeError" role="alert">
+          Bridge error: {bridgeError}
         </div>
       )}
 
