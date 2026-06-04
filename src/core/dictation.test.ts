@@ -61,7 +61,7 @@ describe("createDictationResult", () => {
     expect(result.id).toBeTruthy();
     expect(result.createdAt).toBeTruthy();
     expect(result.confidence).toBe(0.92);
-    expect(result.actions.length).toBeGreaterThan(0);
+    expect((result.actions ?? []).length).toBeGreaterThan(0);
   });
 });
 

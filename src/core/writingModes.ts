@@ -22,6 +22,24 @@ export const writingModeDescriptions: Record<WritingMode, string> = {
   dictate: "Minimal cleanup — fillers removed only",
 };
 
+export type Tier = "free" | "pro";
+
+export const modeTier: Record<WritingMode, Tier> = {
+  email: "free",
+  casual: "free",
+  dictate: "free",
+  slack: "pro",
+  code: "pro",
+  formal: "pro",
+};
+
+export const FREE_MODES: WritingMode[] = WRITING_MODES.filter((m) => modeTier[m] === "free");
+export const PRO_MODES: WritingMode[] = WRITING_MODES.filter((m) => modeTier[m] === "pro");
+
+export function isProMode(mode: WritingMode): boolean {
+  return modeTier[mode] === "pro";
+}
+
 export function writingModeToContext(mode: WritingMode, privacyMode: boolean): DictationContext {
   return {
     mode,

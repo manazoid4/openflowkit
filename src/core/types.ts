@@ -62,10 +62,10 @@ export interface DictationResult {
   latencyMs: number;
   confidence: number;
   privacyMode: boolean;
-  appContext?: string;
-  status: DictationStatus;
-  actions: string[];
-  createdAt: string;
+  appContext?: string | null;
+  status: DictationStatus | "complete" | "partial" | "error";
+  actions?: string[];
+  createdAt: string | number;
 }
 
 export type DictationRecord = DictationResult;

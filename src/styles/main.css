@@ -152,6 +152,9 @@ h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
 .modeChip { background: none; border: 1.5px solid var(--border); border-radius: 999px; color: var(--text); cursor: pointer; font-family: var(--font); font-size: 0.82rem; font-weight: 700; padding: 6px 14px; transition: all 130ms; }
 .modeChip:hover { border-color: var(--border-strong); }
 .modeChip.active { background: var(--text); border-color: var(--text); color: #fff; }
+.modeChip.proMode { border-color: #c9a84c; color: #7c5f1a; }
+.modeChip.proMode:hover { border-color: #b8942e; background: #fdf8ed; }
+.modeChip.proMode.active { background: #c9a84c; border-color: #c9a84c; color: #fff; }
 .labControls { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
 .langSelect { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 0.82rem; padding: 7px 10px; }
 .privacyToggle { border-radius: 999px; cursor: pointer; font-family: var(--font); font-size: 0.78rem; font-weight: 700; padding: 6px 12px; transition: all 130ms; }
@@ -224,6 +227,21 @@ h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
 .shareText { background: var(--accent-light); border-radius: var(--radius); font-size: 1.05rem; line-height: 1.7; margin-bottom: 24px; padding: 20px; white-space: pre-wrap; }
 .shareActions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
 .shareNoticeSmall { color: var(--text-muted); font-size: 0.82rem; margin: 0; }
+
+.upgradeOverlay { align-items: center; background: rgba(0,0,0,0.4); display: flex; inset: 0; justify-content: center; position: fixed; z-index: 50; }
+.upgradeCard { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-lg); max-width: 400px; padding: 36px 32px 28px; position: relative; text-align: center; width: 100%; }
+.upgradeClose { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 4px 8px; position: absolute; right: 14px; top: 14px; }
+.upgradeClose:hover { color: var(--text); }
+.upgradeTitle { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.upgradeDesc { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px; }
+.upgradePerks { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; text-align: left; }
+.upgradePerk { align-items: center; color: var(--text-secondary); display: flex; font-size: 0.9rem; gap: 10px; }
+.upgradePerkIcon { color: var(--accent); font-weight: 700; }
+.upgradePrice { margin-bottom: 20px; }
+.upgradePrice strong { font-size: 2rem; font-weight: 900; letter-spacing: -0.03em; }
+.upgradePrice span { color: var(--text-muted); font-size: 0.9rem; }
+.upgradeCta { font-size: 1rem; min-height: 48px; width: 100%; }
+.upgradeFine { color: var(--text-muted); font-size: 0.78rem; margin-top: 14px; }
 
 @media (max-width: 1100px) {
   .modesGrid   { grid-template-columns: repeat(3, minmax(0,1fr)); }

@@ -33,12 +33,7 @@ interface SpeechRecognition {
   stop(): void;
 }
 
-declare global {
-  interface Window {
-    SpeechRecognition?: new () => SpeechRecognition;
-    webkitSpeechRecognition?: new () => SpeechRecognition;
-  }
-}
+// SpeechRecognition types are provided by src/types/speech.d.ts
 
 const createSegment = (text: string, startMs: number, endMs: number, confidence?: number): TranscriptSegment => ({
   text,

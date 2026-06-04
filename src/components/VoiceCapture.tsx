@@ -131,7 +131,7 @@ export const VoiceCapture: React.FC<VoiceCaptureProps> = ({ context, onResult, o
                 <p className="refined">{item.refinedText}</p>
                 <p className="meta">
                   {item.latencyMs}ms · {item.confidence > 0 ? `${Math.round(item.confidence * 100)}%` : "?"} confidence ·{" "}
-                  {item.actions.slice(0, 3).join(", ")}
+                  {(item.actions ?? []).slice(0, 3).join(", ")}
                 </p>
               </li>
             ))}

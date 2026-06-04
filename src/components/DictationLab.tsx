@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { deterministicRefine } from "../core/refine";
-import { WRITING_MODES, writingModeLabels, writingModeToContext } from "../core/writingModes";
+import { WRITING_MODES, writingModeLabels, writingModeToContext, isProMode, modeTier } from "../core/writingModes";
 import type { WritingMode } from "../core/writingModes";
 import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
 import { useHistory } from "../hooks/useHistory";
 import { useTerminalBridge } from "../hooks/useTerminalBridge";
 import type { DictationRecord } from "../core/types";
+import { UpgradePrompt } from "./UpgradePrompt";
 
 const LANGUAGES = [
   { code: "en-US", label: "English (US)" },
@@ -38,6 +39,7 @@ export function DictationLab({ onBack }: Props) {
   const [refinedActions, setRefinedActions] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
   const [sharedLink, setSharedLink] = useState("");
+  const [proPromptMode, setProPromptMode] = useState<WritingMode | null>(null);
 
   const { state, interimTranscript, finalTranscript, error, start, stop, reset } =
     useSpeechRecognition(language);
@@ -138,16 +140,25 @@ export function DictationLab({ onBack }: Props) {
           ← Back
         </button>
         <nav className="modeSelector" aria-label="Writing mode">
-          {WRITING_MODES.map((m) => (
-            <button
-              key={m}
-              className={`modeChip${mode === m ? " active" : ""}`}
-              onClick={() => setMode(m)}
-              aria-pressed={mode === m}
-            >
-              {writingModeLabels[m]}
-            </button>
-          ))}
+          {WRITING_MODES.map((m) => {
+            const pro = isProMode(m);
+            return (
+              <button
+                key={m}
+                className={`modeChip${mode === m ? " active" : ""}${pro ? " proMode" : ""}`}
+                onClick={() => {
+                  if (pro) {
+                    setProPromptMode(m);
+                  } else {
+                    setMode(m);
+                  }
+                }}
+                aria-pressed={mode === m && !pro}
+              >
+                {writingModeLabels[m]}{pro ? " ✦" : ""}
+              </button>
+            );
+          })}
         </nav>
         <div className="labControls">
           <select
@@ -392,6 +403,13 @@ export function DictationLab({ onBack }: Props) {
             )}
           </aside>
         </>
+      )}
+
+      {proPromptMode && (
+        <UpgradePrompt
+          mode={proPromptMode}
+          onClose={() => setProPromptMode(null)}
+        />
       )}
     </div>
   );
