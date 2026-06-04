@@ -11,6 +11,15 @@ export type DictationMode =
   | "formal"
   | "casual";
 
+export type DictationStatus =
+  | "idle"
+  | "capturing"
+  | "transcribing"
+  | "refining"
+  | "injecting"
+  | "completed"
+  | "error";
+
 export interface DictationContext {
   activeApp?: string;
   language?: string;
@@ -43,7 +52,7 @@ export interface RefinementResult {
   actions: string[];
 }
 
-export interface DictationRecord {
+export interface DictationResult {
   id: string;
   rawTranscript: string;
   refinedText: string;
@@ -53,10 +62,13 @@ export interface DictationRecord {
   latencyMs: number;
   confidence: number;
   privacyMode: boolean;
-  appContext: string | null;
-  status: "complete" | "partial" | "error";
-  createdAt: number;
+  appContext?: string;
+  status: DictationStatus;
+  actions: string[];
+  createdAt: string;
 }
+
+export type DictationRecord = DictationResult;
 
 export interface SpeechToTextProvider {
   id: string;
@@ -78,4 +90,19 @@ export interface Integration {
   status: "ready" | "planned" | "community";
   plan: Plan;
   summary: string;
+}
+
+export interface CaptureState {
+  status: DictationStatus;
+  interimText: string;
+  finalText: string;
+  error?: string;
+  recordingStartMs?: number;
+}
+
+export interface TerminalBridgeMessage {
+  type: "dictation" | "command" | "ping" | "pong";
+  payload: string;
+  timestamp: number;
+  id: string;
 }
